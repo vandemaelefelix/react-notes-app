@@ -1,13 +1,12 @@
-import { ChangeEventHandler, useRef, useState } from 'react';
+import { ChangeEventHandler, MouseEventHandler, useRef, useState, MouseEvent, ChangeEvent } from 'react';
 
 function SearchBar() {
     const [searchValue, setSearchValue] = useState<string>('');
-    const [isInputCrossVisible, setIsInputCrossVisible] =
-        useState<boolean>(false);
+    const [isInputCrossVisible, setIsInputCrossVisible] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const updateSearchInput: ChangeEventHandler = (event: any): void => {
-        const value = event.currentTarget.value;
+    const updateSearchInput: ChangeEventHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+        const value: string = event.currentTarget.value;
         if (value !== '') {
             setIsInputCrossVisible(true);
         } else {
@@ -16,7 +15,7 @@ function SearchBar() {
         setSearchValue(value);
     };
 
-    const handleClearClick = (event: any): void => {
+    const handleClearClick: MouseEventHandler = (event: MouseEvent<HTMLElement>): void => {
         event.preventDefault();
         setSearchValue('');
         setIsInputCrossVisible(false);
@@ -44,13 +43,9 @@ function SearchBar() {
                     `}
                     viewBox="0 0 43 43"
                     onClick={handleClearClick}
-                    onMouseDown={(e) => e.preventDefault()}
+                    onMouseDown={(e): void => e.preventDefault()}
                 >
-                    <path
-                        d="M21.5,0A21.5,21.5,0,1,1,0,21.5,21.5,21.5,0,0,1,21.5,0Z"
-                        fill="#363a4d"
-                        id="circle"
-                    />
+                    <path d="M21.5,0A21.5,21.5,0,1,1,0,21.5,21.5,21.5,0,0,1,21.5,0Z" fill="#363a4d" id="circle" />
                     <path
                         d="M11,13.5a2.492,2.492,0,0,1-1.768-.732l-11-11a2.5,2.5,0,0,1,0-3.536,2.5,2.5,0,0,1,3.536,0l11,11A2.5,2.5,0,0,1,11,13.5Z"
                         transform="translate(16 16)"
