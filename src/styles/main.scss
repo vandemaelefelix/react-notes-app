@@ -7,7 +7,13 @@
 @import 'layout/header';
 
 @import 'components/button';
+@import 'components/searchbar';
 
 @import 'pages/home';
 
 @import 'themes/light-theme';
+@import 'themes/dark-theme';
+
+* {
+    box-sizing: border-box;
+}

@@ -1,7 +1,9 @@
+import SearchBar from './searchbar';
+
 function Header() {
     return (
         <header>
-            <h1>This is a header</h1>
+            <SearchBar></SearchBar>
         </header>
     );
 }

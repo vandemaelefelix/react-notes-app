@@ -1,0 +1,96 @@
+.searchContainer {
+    width: 100%;
+    max-width: 500px;
+    margin: 1rem auto;
+    padding: 0 1rem;
+    color: $dark-text-light;
+
+    .searchBar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        background-color: $dark-background-500;
+        border: none;
+        padding: 0.75rem 0.75rem;
+        border-radius: 10rem;
+        // color: $dark-text-light;
+        border: 2px solid $dark-background-500;
+        transition: background-color 0.2s ease;
+
+        &:focus-within {
+            background-color: $dark-background-900;
+        }
+
+        .searchIcon {
+            width: 1rem;
+            height: 1rem;
+            fill: $dark-text-light;
+            margin-right: 0.5rem;
+            opacity: 0.5;
+            order: 1;
+        }
+
+        .searchInput {
+            flex-grow: 1;
+            order: 2;
+            background-color: transparent;
+            border: none;
+            color: $dark-text-light;
+            opacity: 0.5;
+            padding: 0;
+
+            &:focus {
+                border: none;
+                outline: none;
+                opacity: 1;
+            }
+            &:focus ~ .searchCross.show {
+                opacity: 1;
+                pointer-events: auto;
+
+                #circle {
+                    fill: $dark-background-500;
+                }
+
+                #line1,
+                #line2 {
+                    fill: $dark-background-900;
+                }
+            }
+            &:focus ~ .searchIcon {
+                opacity: 1;
+            }
+            &::placeholder {
+                color: $dark-text-light;
+                opacity: 0.5;
+            }
+        }
+
+        .searchCross {
+            order: 3;
+            width: 1.5rem;
+            height: 1.5rem;
+            opacity: 0;
+            pointer-events: none;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+
+            #circle {
+                fill: $dark-background-900;
+                transition: fill 0.2s ease;
+            }
+
+            #line1,
+            #line2 {
+                fill: $dark-background-500;
+                transition: fill 0.2s ease;
+            }
+        }
+
+        .searchCross.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+}
