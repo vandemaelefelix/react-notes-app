@@ -1,0 +1,49 @@
+.popUpWrapper {
+    width: 100vw;
+    height: 100vh;
+
+    position: fixed;
+    top: 0;
+    bottom: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    backdrop-filter: blur(0rem);
+
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+
+    &.show {
+        backdrop-filter: blur(0.5rem);
+        pointer-events: auto;
+    }
+}
+
+.popUpContainer {
+    width: #{'min(90%, 30rem)'};
+    height: 80%;
+    background-color: $dark-background-500;
+
+    border-radius: $card-border-radius;
+
+    transform: translateY(3rem);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+
+    &.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .closePopUp {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50rem;
+        background-color: $dark-background-900;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+}

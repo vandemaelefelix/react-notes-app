@@ -1,0 +1,22 @@
+.newNoteButton {
+    all: unset;
+    width: 4rem;
+    height: 4rem;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    border-radius: 100%;
+    background-color: $dark-background-500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .cross {
+        width: 40%;
+        height: 40%;
+
+        path {
+            fill: $dark-text-light;
+        }
+    }
+}
