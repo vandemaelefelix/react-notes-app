@@ -1,28 +1,39 @@
-import React, { useState } from 'react';
+import React, { ForwardRefExoticComponent, useRef, useState } from 'react';
 import { Outlet } from 'react-router';
+import EditNotePopUp from '../components/editNotePopUp';
 import Header from '../components/header';
 import NewNoteButton from '../components/newNoteButton';
-import NewNotePopUp from '../components/newNotePopUp';
 
 function WithNav() {
-    const [isNewNotePopUpVisible, setIsNewNotePopUpVisible] = useState(false);
+    const popUpCreateNewNote = useRef<any>();
+    const [isEditNotePopUpVisible, setIsEditNotePopUpVisible] = useState<boolean>(false);
 
-    const handleNewNote = (e: any) => {
-        console.log('button clicked');
-        console.log(e.currentTarget);
-        toggleNewNotePopUp();
+    const hideEditNotePopUp = (): void => {
+        setIsEditNotePopUpVisible(false);
+    };
+    const showEditNotePopUp = (): void => {
+        setIsEditNotePopUpVisible(true);
     };
 
-    const toggleNewNotePopUp = () => {
-        setIsNewNotePopUpVisible(!isNewNotePopUpVisible);
+    const handleNewNote = (e: any) => {
+        console.log('showing popup');
+
+        if (popUpCreateNewNote.current) {
+            popUpCreateNewNote.current.setNewNote(true);
+            showEditNotePopUp();
+        }
     };
 
     return (
         <>
             <Header />
             <Outlet />
-            <NewNotePopUp togglePopUp={toggleNewNotePopUp} isVisible={isNewNotePopUpVisible}></NewNotePopUp>
             <NewNoteButton handleNewNote={handleNewNote}></NewNoteButton>
+            <EditNotePopUp
+                hidePopUp={hideEditNotePopUp}
+                isVisible={isEditNotePopUpVisible}
+                ref={popUpCreateNewNote}
+            ></EditNotePopUp>
         </>
     );
 }

@@ -1,7 +1,8 @@
-import { FirebaseError } from 'firebase/app';
-import { MouseEvent, MouseEventHandler, useState } from 'react';
+import { MouseEvent, MouseEventHandler, useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
 
-import { createUser } from '../firebase/firebase';
+import { auth, registerWithEmailAndPassword } from '../firebase/firebase';
 
 function Register() {
     const [firstName, setFirstName] = useState<string>('');
@@ -9,14 +10,20 @@ function Register() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const handleAuthentication = async () => {
-        const response = await createUser(email, password);
-        console.log(typeof response);
-        // if (typeof(response) == User) {
-        //     console.log(response)
-        // } else if(typeof(response) == FirebaseError) {
+    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
 
-        // }
+    useEffect(() => {
+        if (loading) {
+            // maybe trigger a loading screen
+            return;
+        }
+        if (user) navigate('/', { replace: true });
+    }, [user, loading, navigate]);
+
+    const handleAuthentication = async () => {
+        const user = await registerWithEmailAndPassword(`${firstName} ${lastName}`, email, password);
+        console.log(user);
     };
 
     const handleRegister: MouseEventHandler = (e: MouseEvent<HTMLElement>) => {

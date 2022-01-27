@@ -1,53 +1,168 @@
-import { FirebaseError } from 'firebase/app';
 import {
     createUserWithEmailAndPassword,
     getAuth,
-    onAuthStateChanged,
+    GoogleAuthProvider,
     signInWithEmailAndPassword,
     User,
     UserCredential,
+    signInWithPopup,
+    signOut,
 } from 'firebase/auth';
+
+import {
+    query,
+    getDocs,
+    collection,
+    where,
+    addDoc,
+    getFirestore,
+    doc,
+    setDoc,
+    Timestamp,
+    updateDoc,
+} from 'firebase/firestore';
+import { INote, INoteUpdate } from '../utils/interfaces';
+
 import { app } from './firebase-config';
 
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-const getCurrentUser = () => {
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/firebase.User
-            const uid = user.uid;
-            // ...
-        } else {
-            // User is signed out
-            // ...
+const googleProvider = new GoogleAuthProvider();
+const signInWithGoogle = async () => {
+    try {
+        const res = await signInWithPopup(auth, googleProvider);
+        const user = res.user;
+        console.log(user);
+        const q = query(collection(db, 'users'), where('uid', '==', user.uid));
+        const docs = await getDocs(q);
+        if (docs.docs.length === 0) {
+            await addDoc(collection(db, 'users'), {
+                uid: user.uid,
+                name: user.displayName,
+                authProvider: 'google',
+                email: user.email,
+            });
         }
-    });
+
+        return user;
+    } catch (err: any) {
+        console.error(err);
+        return err;
+    }
 };
 
-const createUser = async (email: string, password: string) => {
-    const authentication = getAuth();
-    return await createUserWithEmailAndPassword(authentication, email, password)
-        .then((userCredential: UserCredential) => {
-            const user: User = userCredential.user;
-            return user;
-        })
-        .catch((error: FirebaseError): FirebaseError => error);
+const logInWithEmailAndPassword = async (email: string, password: string) => {
+    try {
+        const res: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log(res.user);
+        return res.user;
+    } catch (err: any) {
+        console.error(err);
+        return err;
+    }
 };
 
-const signInUser = async (email: string, password: string) => {
-    signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential: UserCredential) => {
-            const user: User = userCredential.user;
-            console.log(user);
-        })
-        .catch((error: FirebaseError) => {
-            const errorCode: string = error.code;
-            const errorMessage: string = error.message;
-
-            console.log(`Error code: ${errorCode}
-Error message: ${errorMessage}`);
+const registerWithEmailAndPassword = async (name: string, email: string, password: string) => {
+    try {
+        const res = await createUserWithEmailAndPassword(auth, email, password);
+        const user: User = res.user;
+        console.log(user);
+        await addDoc(collection(db, 'users'), {
+            uid: user.uid,
+            name: name,
+            authProvider: 'local',
+            email,
         });
+        return user;
+    } catch (err: any) {
+        console.error(err);
+        return err;
+    }
 };
 
-export { app, auth, createUser, signInUser as signInWithEmailAndPassword, getCurrentUser };
+const logout = (): void => {
+    signOut(auth);
+};
+
+const createNewNote = async ({
+    title = '',
+    content = '',
+    images = [],
+    color = '',
+    tickboxes = false,
+    created = Timestamp.now(),
+    modified = Timestamp.now(),
+    uid = '',
+}: INote): Promise<string> => {
+    try {
+        const ref = await addDoc(collection(db, 'notes'), {
+            title: title,
+            content: content,
+            images: images,
+            color: color,
+            tickboxes: tickboxes,
+            created: created,
+            modified: modified,
+            uid: uid,
+        });
+
+        return ref.id;
+    } catch (error) {
+        // return error;
+        return 'Something went wrong';
+    }
+};
+
+const updateNote = async (docId: string, note: INoteUpdate) => {
+    try {
+        const ref = doc(db, 'notes', docId);
+        // const docRef = await setDoc(ref, note);
+        const docRef = await updateDoc(ref, {
+            title: note.title,
+            content: note.content,
+            images: note.images,
+            color: note.color,
+            tickboxes: note.tickboxes,
+            modified: Timestamp.now(),
+        });
+
+        return docRef;
+    } catch (error) {
+        return error;
+    }
+};
+
+const getNotesByUser = async (uid: string): Promise<INote[]> => {
+    let notes: INote[] = new Array<INote>();
+
+    const notesRef = collection(db, 'notes');
+    const q = query(notesRef, where('uid', '==', uid));
+
+    const querySnapshot = await getDocs(q);
+
+    // const unsub = onSnapshot(doc(db, 'cities', 'SF'), (doc) => {
+    //     console.log('Current data: ', doc.data());
+    // });
+
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, ' => ', doc.data());
+        notes.push(doc.data() as INote);
+    });
+
+    console.log(notes);
+    return notes;
+};
+
+export {
+    auth,
+    db,
+    signInWithGoogle,
+    logInWithEmailAndPassword,
+    registerWithEmailAndPassword,
+    logout,
+    createNewNote,
+    updateNote,
+    getNotesByUser,
+};

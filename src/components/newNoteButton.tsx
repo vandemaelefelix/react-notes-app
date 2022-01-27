@@ -1,10 +1,4 @@
-import { MouseEvent, MouseEventHandler } from 'react';
-
 function NewNoteButton({ handleNewNote }: any) {
-    // const handleNewNoteClick: MouseEventHandler = (e: MouseEvent<HTMLElement>): void => {
-    //     console.log(e.currentTarget);
-    // };
-
     return (
         <button onClick={handleNewNote} className="newNoteButton">
             <svg className="cross" viewBox="0 0 42.477 42.477">

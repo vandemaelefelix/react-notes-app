@@ -1,5 +1,3 @@
-import React, { MutableRefObject, useRef, useState } from 'react';
-
 import Home from './screens/Home';
 import { Route, Routes } from 'react-router-dom';
 

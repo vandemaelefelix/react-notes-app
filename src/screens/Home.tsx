@@ -1,13 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
 import NotesGrid from '../components/notesGrid';
-import { getCurrentUser } from '../firebase/firebase';
+import { auth } from '../firebase/firebase';
 
 function Home() {
-    const [user, setUser] = useState(getCurrentUser);
+    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        console.log(user);
-    }, []);
+        if (loading) {
+            // maybe trigger a loading screen
+            return;
+        }
+        if (!user) navigate('/login');
+    }, [user, loading]);
 
     return (
         <main className="homeMain">
