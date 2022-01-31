@@ -7,6 +7,8 @@ import {
     UserCredential,
     signInWithPopup,
     signOut,
+    setPersistence,
+    browserSessionPersistence,
 } from 'firebase/auth';
 
 import {
@@ -27,6 +29,24 @@ import { app } from './firebase-config';
 
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// const persistence = async (email: string, password: string) => {
+//     setPersistence(auth, browserSessionPersistence)
+//         .then(async () => {
+//             // Existing and future Auth states are now persisted in the current
+//             // session only. Closing the window would clear any existing state even
+//             // if a user forgets to sign out.
+//             // ...
+//             // New sign-in will be persisted with session persistence.
+//             // return signInWithEmailAndPassword(auth, email, password);
+//             return await logInWithEmailAndPassword(email, password);
+//         })
+//         .catch((error) => {
+//             // Handle Errors here.
+//             const errorCode = error.code;
+//             const errorMessage = error.message;
+//         });
+// };
 
 const googleProvider = new GoogleAuthProvider();
 const signInWithGoogle = async () => {
@@ -56,6 +76,8 @@ const logInWithEmailAndPassword = async (email: string, password: string) => {
     try {
         const res: UserCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log(res.user);
+        sessionStorage.setItem('Auth Token', res.user.refreshToken);
+        console.log(sessionStorage.getItem('Auth Token'));
         return res.user;
     } catch (err: any) {
         console.error(err);

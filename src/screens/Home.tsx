@@ -1,3 +1,4 @@
+import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +15,7 @@ function Home() {
             return;
         }
         if (!user) navigate('/login');
+        console.log(user);
     }, [user, loading]);
 
     return (
