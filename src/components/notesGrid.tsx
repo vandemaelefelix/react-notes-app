@@ -18,32 +18,19 @@ function NotesGrid() {
         }
         if (!user || user === null) navigate('/login');
         console.log(user);
+
+        const unsubscribe = getData();
+
+        return () => unsubscribe();
     }, [user, loading]);
 
-    // useEffect(() => {
-    //     // console.log(auth.currentUser?.uid);
-
-    //     let unsubscribe: any;
-    //     if (auth.currentUser?.uid) {
-    //         console.log(auth.currentUser?.uid);
-    //         const q = query(collection(db, 'notes'), where('uid', '==', auth.currentUser?.uid));
-    //         unsubscribe = onSnapshot(q, (querySnapshot) => {
-    //             const notes: any = [];
-    //             querySnapshot.forEach((doc) => {
-    //                 notes.push(doc.data());
-    //             });
-    //             // console.log(notes);
-    //             setData(notes);
-    //         });
-    //     }
-    //     console.log(data);
-    //     //remember to unsubscribe from your realtime listener on unmount or you will create a memory leak
-    //     return () => unsubscribe();
-    // }, []);
-
     useEffect(() => {
-        console.log(user);
+        const unsubscribe = getData();
+        //remember to unsubscribe from your realtime listener on unmount or you will create a memory leak
+        return () => unsubscribe();
+    }, []);
 
+    const getData = () => {
         let unsubscribe: any;
         if (user?.uid) {
             console.log(user?.uid);
@@ -53,22 +40,11 @@ function NotesGrid() {
                 querySnapshot.forEach((doc) => {
                     notes.push(doc.data());
                 });
-                // console.log(notes);
                 setData(notes);
             });
         }
-        console.log(data);
-        //remember to unsubscribe from your realtime listener on unmount or you will create a memory leak
-        return () => unsubscribe();
-    }, []);
-
-    // const getNotes = async () => {
-    //     if (auth.currentUser?.uid) {
-    //         const notes = await getNotesByUser(auth.currentUser?.uid);
-    //         setNotes(notes);
-    //         console.log('succes');
-    //     }
-    // };
+        return unsubscribe;
+    };
 
     return (
         <div className="notesGrid">
