@@ -1,22 +1,24 @@
-import React from 'react';
-
 import Home from './screens/Home';
 import { Route, Routes } from 'react-router-dom';
 
 import './styles/main.scss';
-import Header from './components/header';
-// import Footer from './components/footer';
+import Login from './screens/Login';
+import WithOutNav from './screens/WithOutNav';
+import WithNav from './screens/WithNav';
+import Register from './screens/Register';
 
 function App() {
     return (
         <div>
-            <Header></Header>
-
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route element={<WithNav />}>
+                    <Route path="/" element={<Home />} />
+                </Route>
+                <Route element={<WithOutNav />}>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                </Route>
             </Routes>
-
-            {/* <Footer></Footer> */}
         </div>
     );
 }
