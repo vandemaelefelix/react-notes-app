@@ -28,12 +28,12 @@ function WithNav() {
         <>
             <Header />
             <Outlet />
-            <NewNoteButton handleNewNote={handleNewNote}></NewNoteButton>
+            {/* <NewNoteButton handleNewNote={handleNewNote}></NewNoteButton>
             <EditNotePopUp
                 hidePopUp={hideEditNotePopUp}
                 isVisible={isEditNotePopUpVisible}
                 ref={popUpCreateNewNote}
-            ></EditNotePopUp>
+            ></EditNotePopUp> */}
         </>
     );
 }

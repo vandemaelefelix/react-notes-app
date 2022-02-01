@@ -21,10 +21,23 @@ const EditNotePopUp = forwardRef(({ isVisible, hidePopUp }: props, ref) => {
     const [isUpdating, setIsUpdating] = useState(false);
 
     const [isNewNote, setIsNewNote] = useState(false);
+    const [selectedNote, setSelectedNote] = useState({} as INote);
 
     useImperativeHandle(ref, () => ({
-        setNewNote(value: boolean) {
+        setNewNote: (value: boolean): void => {
             setIsNewNote(value);
+        },
+
+        // ? Set input values to current selected note
+        setNoteValues: (note: INote): void => {
+            if (note) {
+                setTitle(note.title);
+                setContent(note.content);
+                setImages(note.images);
+                setColor(note.color);
+                setIsTickboxes(note.tickboxes);
+                setDocId(note?.id || '');
+            }
         },
     }));
 

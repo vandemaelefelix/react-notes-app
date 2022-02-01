@@ -3,13 +3,15 @@ import { INote } from '../utils/interfaces';
 
 interface Props {
     data: any;
+    handleClick: Function;
 }
 
-function Note({ data }: Props) {
+function Note({ data, handleClick }: Props) {
     const handleNoteClick: MouseEventHandler = (e: MouseEvent<HTMLElement>) => {
         console.log(e);
         console.log(data);
         console.log(typeof data);
+        handleClick(data);
     };
 
     return (
