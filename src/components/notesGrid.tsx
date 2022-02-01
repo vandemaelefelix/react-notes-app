@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db, getNotesByUser } from '../firebase/firebase';
 import { INote } from '../utils/interfaces';
 import useSnapshot from '../utils/useSnapshot';
+import Note from './note';
 
 function NotesGrid() {
     const [data, setData] = useState<any[]>(new Array());
@@ -38,9 +39,13 @@ function NotesGrid() {
             unsubscribe = onSnapshot(q, (querySnapshot) => {
                 const notes: any = [];
                 querySnapshot.forEach((doc) => {
-                    notes.push(doc.data());
+                    console.log(doc.id);
+                    const note = doc.data();
+                    note['id'] = doc.id;
+                    notes.push(note);
                 });
                 setData(notes);
+                console.log(notes);
             });
         }
         return unsubscribe;
@@ -48,16 +53,7 @@ function NotesGrid() {
 
     return (
         <div className="notesGrid">
-            {data ? (
-                data.map((note: any) => (
-                    <div key={Math.random()} className="noteContainer">
-                        <p className="noteTitle">{note.title}</p>
-                        <p className="noteContent">{note.content}</p>
-                    </div>
-                ))
-            ) : (
-                <></>
-            )}
+            {data ? data.map((note: INote) => <Note key={note.id} data={note}></Note>) : <></>}
         </div>
     );
 }

@@ -9,6 +9,7 @@ export interface INote {
     created: Timestamp;
     modified: Timestamp;
     uid: string;
+    id?: string;
 }
 
 export interface INoteUpdate {
